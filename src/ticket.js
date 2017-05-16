@@ -1,36 +1,33 @@
-const attributes = ['id', 'link', 'title', 'description'],
-      fields = ['requester', 'status', 'agent', 'priority'],
-      exampleTicket = require('../ticket.json'),
-      users = require('./users');
+const attributes = ['id', 'link', 'title', 'description'];
+const fields = ['requester', 'status', 'agent', 'priority'];
+const exampleTicket = require('../ticket.json');
+const users = require('./users');
 
 class Ticket {
   constructor(options) {
-    for(let attr of attributes) this[attr] = options[attr];
+    for (const attr of attributes) this[attr] = options[attr];
     this.fields = {};
-    for(let field of fields) this.fields[field] = options[field];
+    for (const field of fields) this.fields[field] = options[field];
   }
 
   updateField(field, value) {
-    switch(field){
+    switch (field) {
       case 'agent': return this.setAgent(value);
       case 'priority': return this.setPriority(value);
+      default: return null;
     }
   }
 
   setAgent(userId) {
-    return new Promise( (resolve, reject) => {
-      users.find(userId).then(result => {
-        this.fields.agent = result.data.user.name;
-        resolve(this);
-      });
+    users.find(userId).then((result) => {
+      this.fields.agent = result.data.user.name;
+      return Promise.resolve(this);
     });
   }
 
   setPriority(priority) {
-    return new Promise( (resolve, reject) => {
-      this.fields.priority = priority;
-      resolve(this);
-    });
+    this.fields.priority = priority;
+    return Promise.resolve(this);
   }
 
   static find(id) {

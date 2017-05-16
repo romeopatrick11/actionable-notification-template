@@ -1,11 +1,11 @@
-const qs = require('querystring'),
-      axios = require('axios'),
+const qs = require('querystring');
+const axios = require('axios');
 
-find = (slackUserId) => {
-  let body = { token: process.env.TOKEN, user: slackUserId };
-  let promise = axios.post('https://slack.com/api/users.info', qs.stringify(body));
+const find = (slackUserId) => {
+  const body = { token: process.env.TOKEN, user: slackUserId };
+  const promise = axios.post('https://slack.com/api/users.info', qs.stringify(body));
 
   return promise;
 };
 
-module.exports = {find};
+module.exports = { find };

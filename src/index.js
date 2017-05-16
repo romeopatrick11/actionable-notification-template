@@ -1,37 +1,37 @@
-const express = require('express'),
-      bodyParser = require('body-parser'),
-      notifier = require('./notifier'),
-      template = require('./template'),
-      Ticket = require('./ticket'),
-      mockTicket = require('../ticket.json');
+const express = require('express');
+const bodyParser = require('body-parser');
+const notifier = require('./notifier');
+const template = require('./template');
+const Ticket = require('./ticket');
+const mockTicket = require('../ticket.json');
 
-app = express();
+const app = express();
 
 // parse application/x-www-form-urlencoded && application/json
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.post('/new-ticket', (req, res) => {
-  let ticket = new Ticket(mockTicket);
+  const ticket = new Ticket(mockTicket);
   notifier.sendNotification(ticket);
   res.sendStatus(200);
 });
 
 app.post('/interactive-message', (req, res) => {
-  let {actions, channel, response_url, callback_id} = JSON.parse(req.body.payload);
-  let ticket = Ticket.find(callback_id);
+  const { actions, channel, callback_id } = JSON.parse(req.body.payload);
+  const ticket = Ticket.find(callback_id);
+  const action = actions[0];
 
-  if (ticket){
-    let selected = action[0].selected_options[0].value;
+  if (ticket) {
+    const selected = action.selected_options[0].value;
 
-    ticket.updateField(action.name, selected).then(result => {
+    ticket.updateField(actions.name, selected).then((result) => {
       notifier.sendUpdateNotification(result, channel.id, action.name);
       res.send(template.fill(result));
     });
   }
 });
 
-app.listen(process.env.PORT, function () {
-  console.log(`App listening on port ${ process.env.PORT }!`);
+app.listen(process.env.PORT, () => {
+  console.log(`App listening on port ${process.env.PORT}!`);
 });
-
