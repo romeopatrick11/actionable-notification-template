@@ -8,4 +8,16 @@ find = (slackUserId) => {
   return promise
 }
 
-module.exports = {find}
+getBotUserID = () => {
+  return new Promise( (resolve, reject) => {
+    let body = { token: process.env.TOKEN }
+    let authTest = axios.post('https://slack.com/api/auth.test', qs.stringify(body));
+
+    authTest.then(result => {
+      console.log(result.data.user_id)
+      resolve(result.data.user_id)
+    })
+  })
+}
+
+module.exports = {find, getBotUserID}

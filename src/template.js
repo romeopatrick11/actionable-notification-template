@@ -1,6 +1,6 @@
 const labels = ['High', 'Medium', 'Low']
 
-fill = (ticket) => {
+fill = (ticket, stringify) => {
   let attachment = {
     title:       ticket.title,
     title_link:  ticket.link,
@@ -38,7 +38,12 @@ fill = (ticket) => {
     data_source: "users"
   }]
 
-  return { attachments: [ attachment ] }
+  let attachments = [attachment]
+  if(stringify) {
+    attachments = JSON.stringify(attachments)
+  }
+
+  return { text: "", attachments: attachments }
 }
 
 module.exports = {fill}

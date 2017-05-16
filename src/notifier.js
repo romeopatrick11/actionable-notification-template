@@ -2,16 +2,25 @@ const qs = require('querystring'),
       axios = require('axios'),
       template = require('./template')
 
-sendNotification = (ticket, url) => {
-  let message = template.fill(ticket);
-  let sendMessage = axios.post(url || process.env.WEBHOOK, message);
-  sendMessage.then(logResult);
+sendNotification = (ticket, channel_id) => {
+  let body = template.fill(ticket, true);
+  body.token = process.env.TOKEN
+  body.channel = channel_id
+
+  postMessage(body)
 }
 
 sendUpdateNotification = (ticket, channel, field) => {
   let body = {channel: channel, token: process.env.TOKEN,
     text:`<${ticket.link}|${ticket.title}> ${field} updated!` }
-  let sendMessage = axios.post('https://slack.com/api/chat.postMessage', qs.stringify(body));
+
+  postMessage(body)
+}
+
+postMessage = (body) => {
+  let sendMessage = axios.post('https://slack.com/api/chat.postMessage',
+    qs.stringify(body));
+
   sendMessage.then(logResult);
 }
 
