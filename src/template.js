@@ -1,4 +1,4 @@
-const labels = ['High', 'Medium', 'Low']
+const labels = ['High', 'Medium', 'Low'];
 
 fill = (ticket) => {
   let attachment = {
@@ -6,15 +6,15 @@ fill = (ticket) => {
     title_link:  ticket.link,
     text:        ticket.description,
     callback_id: ticket.id,
-  }
+  };
 
-  attachment.fields = []
+  attachment.fields = [];
   for(let key of Object.keys(ticket.fields)){
     attachment.fields.push({
       title: capitalizeFirstLetter(key),
       value: ticket.fields[key],
       short: true
-    })
+    });
   }
 
   attachment.actions = [{
@@ -28,7 +28,7 @@ fill = (ticket) => {
     text: "Set a priority",
     type: "select",
     options: labels.map( label => {
-      return {"text": label, "value": label}
+      return {"text": label, "value": label};
     })
   },
   {
@@ -36,9 +36,9 @@ fill = (ticket) => {
     text: "Assign agent",
     type: "select",
     data_source: "users"
-  }]
+  }];
 
-  return { attachments: [ attachment ] }
-}
+  return { attachments: [ attachment ] };
+};
 
-module.exports = {fill}
+module.exports = {fill};
